@@ -27,7 +27,11 @@ $MVN --version
 
 # Simplified Maven build - let pom.xml handle Java version settings  
 echo "Running: $MVN clean package -Dmaven.test.skip=true -Dmaven.repo.local=$OUT/m2"
-$MVN clean package -Dmaven.test.skip=true -Dmaven.repo.local=$OUT/m2 -e
+$MVN clean package -Dmaven.test.skip=true -Dmaven.repo.local=$OUT/m2 -e > /tmp/maven.log 2>&1
+echo "Maven exit code: $?"
+echo "=== Maven Log (first 100 lines) ==="
+head -100 /tmp/maven.log
+echo "=== End Maven Log ==="
 
 # Debug: Show what was actually created
 echo "Contents of target directory:"
