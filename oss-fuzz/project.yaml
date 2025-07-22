@@ -1,8 +1,8 @@
-homepage: "https://github.com/your-username/fuzzer-test"
+homepage: "https://github.com/Julian-Hans/test-cp"
 language: jvm
-primary_contact: "your-email@example.com"
+primary_contact: "julian.hans@example.com"
 auto_ccs:
-  - "your-email@example.com"
+  - "julian.hans@example.com"
 
 sanitizers:
   - address
@@ -12,4 +12,4 @@ coverage_extra_args: -ignore-calls=com.code_intelligence.jazzer.runtime.NativeLi
 fuzzing_engines:
   - libfuzzer
 
-main_repo: "https://github.com/your-username/fuzzer-test.git"
+main_repo: "https://github.com/Julian-Hans/test-cp.git"

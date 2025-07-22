@@ -1,5 +1,8 @@
 #!/bin/bash -eu
 
+# Change to project root directory 
+cd $SRC
+
 # Build the main project
 mvn clean compile -Dmaven.repo.local=$OUT/m2
 
@@ -9,7 +12,7 @@ mkdir -p target/test-classes
 # Build the fuzzer classes (TestFuzzer.java is in the same directory as this script)
 javac -cp "$JAZZER_API_PATH/jazzer-api-$JAZZER_API_VERSION.jar:target/classes" \
   -d target/test-classes/ \
-  TestFuzzer.java
+  $SRC/oss-fuzz/TestFuzzer.java
 
 # Create classpath with all dependencies
 CLASSPATH="target/classes:target/test-classes"
@@ -23,5 +26,5 @@ $JAZZER_API_PATH/jazzer_driver \
 
 # Also create a standalone JAR version
 mkdir -p $OUT/TestFuzzer_deploy
-cp -r target/classes/* $OUT/TestFuzzer_deploy/
-cp -r target/test-classes/* $OUT/TestFuzzer_deploy/
+cp -r target/classes/* $OUT/TestFuzzer_deploy/ 2>/dev/null || true
+cp -r target/test-classes/* $OUT/TestFuzzer_deploy/ 2>/dev/null || true
