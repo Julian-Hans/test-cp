@@ -23,7 +23,8 @@ RUN curl -L https://archive.apache.org/dist/maven/maven-3/3.9.6/binaries/apache-
 
 ENV MVN=$SRC/apache-maven-3.9.6/bin/mvn
 
-# Clone the target repository
+# Clone the target repository (force fresh clone each time)
+ARG CACHE_BUST=1
 RUN git clone --depth 1 https://github.com/Julian-Hans/test-cp.git
 
 # Copy build script and fuzzer files
