@@ -22,10 +22,8 @@ cd $SRC/test-cp
 MAVEN_ARGS="-Dmaven.test.skip=true -Djavac.src.version=17 -Djavac.target.version=17"
 $MVN clean package org.apache.maven.plugins:maven-shade-plugin:3.5.1:shade $MAVEN_ARGS -Dmaven.repo.local=$OUT/m2
 
-# Get the current version and copy JAR to output
-CURRENT_VERSION=$($MVN org.apache.maven.plugins:maven-help-plugin:3.4.0:evaluate \
- -Dexpression=project.version -q -DforceStdout)
-cp "target/fuzzer-test-$CURRENT_VERSION.jar" $OUT/fuzzer-test.jar
+# Copy JAR to output (use known version from pom.xml)
+cp "target/fuzzer-test-1.0-SNAPSHOT.jar" $OUT/fuzzer-test.jar
 
 ALL_JARS="fuzzer-test.jar"
 
