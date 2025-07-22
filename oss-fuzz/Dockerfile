@@ -21,7 +21,7 @@ RUN curl -L https://archive.apache.org/dist/maven/maven-3/3.9.6/binaries/apache-
     tar xzf maven.tar.gz -C $SRC && \
     rm maven.tar.gz
 
-ENV MVN $SRC/apache-maven-3.9.6/bin/mvn
+ENV MVN=$SRC/apache-maven-3.9.6/bin/mvn
 
 # Clone the target repository
 RUN git clone --depth 1 https://github.com/Julian-Hans/test-cp.git
