@@ -19,12 +19,19 @@
 cd $SRC/test-cp
 
 # Build the main project using Maven and create JAR
-MAVEN_ARGS="-Dmaven.test.skip=true -Djavac.src.version=17 -Djavac.target.version=17"
-$MVN clean package $MAVEN_ARGS -Dmaven.repo.local=$OUT/m2
+echo "=== Running Maven build ==="
+echo "Java version:"
+java -version
+echo "Maven version:"
+$MVN --version
+
+# Simplified Maven build - let pom.xml handle Java version settings  
+echo "Running: $MVN clean package -Dmaven.test.skip=true -Dmaven.repo.local=$OUT/m2"
+$MVN clean package -Dmaven.test.skip=true -Dmaven.repo.local=$OUT/m2 -e
 
 # Debug: Show what was actually created
 echo "Contents of target directory:"
-ls -la target/
+ls -la target/ || echo "No target directory found"
 
 # Copy JAR to output (use known version from pom.xml)
 if [ -f "target/fuzzer-test-1.0-SNAPSHOT.jar" ]; then
