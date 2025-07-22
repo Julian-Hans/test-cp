@@ -18,32 +18,40 @@
 # Change to cloned repository directory
 cd $SRC/test-cp
 
-# Build the main project using Maven
-$MVN clean compile -Dmaven.repo.local=$OUT/m2
+# Build the main project using Maven and create JAR
+MAVEN_ARGS="-Dmaven.test.skip=true -Djavac.src.version=17 -Djavac.target.version=17"
+$MVN clean package org.apache.maven.plugins:maven-shade-plugin:3.5.1:shade $MAVEN_ARGS -Dmaven.repo.local=$OUT/m2
 
-# Create test-classes directory
-mkdir -p target/test-classes
+# Get the current version and copy JAR to output
+CURRENT_VERSION=$($MVN org.apache.maven.plugins:maven-help-plugin:3.4.0:evaluate \
+ -Dexpression=project.version -q -DforceStdout)
+cp "target/fuzzer-test-$CURRENT_VERSION.jar" $OUT/fuzzer-test.jar
 
-# Build the fuzzer classes (TestFuzzer.java is in the OSS-Fuzz directory)
-javac -cp "$JAZZER_API_PATH:target/classes" \
-  -d target/test-classes/ \
-  $SRC/TestFuzzer.java
+ALL_JARS="fuzzer-test.jar"
 
-# Create classpath with all dependencies
-CLASSPATH="target/classes:target/test-classes"
+# The classpath at build-time includes the project jars in $OUT as well as the Jazzer API
+BUILD_CLASSPATH=$(echo $ALL_JARS | xargs printf -- "$OUT/%s:"):$JAZZER_API_PATH
 
-# Build the fuzzer using the standard OSS-Fuzz approach
-# Create the fuzzer executable script
+# All .jar and .class files lie in the same directory as the fuzzer at runtime
+RUNTIME_CLASSPATH=$(echo $ALL_JARS | xargs printf -- "\$this_dir/%s:"):\$this_dir
+
+# Build the fuzzer class
+javac -cp $BUILD_CLASSPATH $SRC/TestFuzzer.java
+cp $SRC/TestFuzzer.class $OUT/
+
+# Create an execution wrapper that executes Jazzer with the correct arguments
 echo "#!/bin/bash
+# LLVMFuzzerTestOneInput for fuzzer detection.
 this_dir=\$(dirname \"\$0\")
-LD_LIBRARY_PATH=\"\$JVM_LD_LIBRARY_PATH\":\$this_dir \
+if [[ \"\$@\" =~ (^| )-runs=[0-9]+($| ) ]]; then
+  mem_settings='-Xmx1900m:-Xss900k'
+else
+  mem_settings='-Xmx2048m:-Xss1024k'
+fi
+LD_LIBRARY_PATH=\"$JVM_LD_LIBRARY_PATH\":\$this_dir \
 \$this_dir/jazzer_driver --agent_path=\$this_dir/jazzer_agent_deploy.jar \
---cp=target/classes:target/test-classes \
+--cp=$RUNTIME_CLASSPATH \
 --target_class=TestFuzzer \
---jvm_args=\"-Xmx2048m\" \
+--jvm_args=\"\$mem_settings\" \
 \$@" > $OUT/TestFuzzer
-chmod +x $OUT/TestFuzzer
-
-# Copy compiled classes to output directory
-cp -r target/classes/* $OUT/ 2>/dev/null || true
-cp -r target/test-classes/* $OUT/ 2>/dev/null || true
+chmod u+x $OUT/TestFuzzer
