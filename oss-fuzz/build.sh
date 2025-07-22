@@ -20,10 +20,19 @@ cd $SRC/test-cp
 
 # Build the main project using Maven and create JAR
 MAVEN_ARGS="-Dmaven.test.skip=true -Djavac.src.version=17 -Djavac.target.version=17"
-$MVN clean package org.apache.maven.plugins:maven-shade-plugin:3.5.1:shade $MAVEN_ARGS -Dmaven.repo.local=$OUT/m2
+$MVN clean package $MAVEN_ARGS -Dmaven.repo.local=$OUT/m2
+
+# Debug: Show what was actually created
+echo "Contents of target directory:"
+ls -la target/
 
 # Copy JAR to output (use known version from pom.xml)
-cp "target/fuzzer-test-1.0-SNAPSHOT.jar" $OUT/fuzzer-test.jar
+if [ -f "target/fuzzer-test-1.0-SNAPSHOT.jar" ]; then
+    cp "target/fuzzer-test-1.0-SNAPSHOT.jar" $OUT/fuzzer-test.jar
+else
+    echo "Expected JAR not found, copying any JAR files found:"
+    find target/ -name "*.jar" -exec cp {} $OUT/fuzzer-test.jar \;
+fi
 
 ALL_JARS="fuzzer-test.jar"
 
