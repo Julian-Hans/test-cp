@@ -1,0 +1,15 @@
+homepage: "https://github.com/your-username/fuzzer-test"
+language: jvm
+primary_contact: "your-email@example.com"
+auto_ccs:
+  - "your-email@example.com"
+
+sanitizers:
+  - address
+
+coverage_extra_args: -ignore-calls=com.code_intelligence.jazzer.runtime.NativeLibHooks.*
+
+fuzzing_engines:
+  - libfuzzer
+
+main_repo: "https://github.com/your-username/fuzzer-test.git"
