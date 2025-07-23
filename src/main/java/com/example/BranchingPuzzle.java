@@ -11,7 +11,7 @@ public class BranchingPuzzle {
     
     private static final String SECRET_PREFIX = "FUZZ";
     private static final int MAGIC_NUMBER = 0x1337;
-    private static final String[] VALID_COMMANDS = {"ls", "pwd", "whoami", "jazzer"};
+    private static final String[] VALID_COMMANDS = {"ls", "pwd", "whoami", "jazze"};
     
     /**
      * Main puzzle entry point - requires complex input structure to reach vulnerability

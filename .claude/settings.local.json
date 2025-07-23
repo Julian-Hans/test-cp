@@ -9,7 +9,17 @@
       "Bash(chmod:*)",
       "Bash(mv:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(export:*)",
+      "Bash(/usr/bin/javac -cp \"target/classes\" -d target/test-classes/ oss-fuzz/TestFuzzer.java)",
+      "Bash(bash:*)",
+      "Bash(ls:*)",
+      "Bash(/usr/libexec/java_home:*)",
+      "Bash(git push:*)",
+      "Bash(python3:*)",
+      "Bash(./test.sh:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:google.github.io)"
     ],
     "deny": []
   }
