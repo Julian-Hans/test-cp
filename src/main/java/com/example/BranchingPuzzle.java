@@ -17,6 +17,7 @@ public class BranchingPuzzle {
      * Main puzzle entry point - requires complex input structure to reach vulnerability
      */
     public String processPuzzleInput(byte[] input) {
+        System.out.println("Processing input: " + Arrays.toString(input));
         if (input == null || input.length < 20) {
             return "Input too short";
         }

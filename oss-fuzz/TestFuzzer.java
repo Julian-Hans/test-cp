@@ -13,12 +13,9 @@ public class TestFuzzer {
      * Main fuzzer entry point for OSS-Fuzz.
      * This method will be called by Jazzer with fuzzed input data.
      * 
-     * @param data Fuzzed input data provided by Jazzer
+     * @param input Raw byte array of fuzzed input data
      */
-    public static void fuzzerTestOneInput(FuzzedDataProvider data) {
-        // Get the raw bytes from the fuzzer
-        byte[] input = data.consumeRemainingAsBytes();
-        
+    public static void fuzzerTestOneInput(byte[] input) {
         try {
             // Feed the fuzzed input to our vulnerable puzzle
             String result = puzzle.processPuzzleInput(input);
@@ -43,23 +40,6 @@ public class TestFuzzer {
                 throw new RuntimeException("OS Command Injection detected: " + e.getMessage(), e);
             }
             // Ignore other exceptions to continue fuzzing
-        }
-    }
-    
-    /**
-     * Alternative entry point using raw byte array (for compatibility)
-     */
-    public static void fuzzerTestOneInput(byte[] input) {
-        try {
-            String result = puzzle.processPuzzleInput(input);
-        } catch (Exception e) {
-            // Same exception handling as above
-            if (e.getMessage() != null && 
-                (e.getMessage().contains("jazzer") || 
-                 e.getMessage().contains("Runtime.exec") ||
-                 e.getMessage().contains("ProcessBuilder"))) {
-                throw new RuntimeException("OS Command Injection detected: " + e.getMessage(), e);
-            }
         }
     }
 }
