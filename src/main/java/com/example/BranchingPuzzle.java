@@ -97,6 +97,7 @@ public class BranchingPuzzle {
      * This is where the Jazzer sanitizer should trigger
      */
     private String executeCommand(String command) {
+        System.out.println("Command is: " + command);
         // Validate against allowed commands list
         boolean isValidCommand = Arrays.stream(VALID_COMMANDS)
                 .anyMatch(cmd -> cmd.equals(command));
